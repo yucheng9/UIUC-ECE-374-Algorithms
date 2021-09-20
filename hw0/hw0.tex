@@ -1,0 +1,373 @@
+% ---------
+%  Compile with "pdflatex hw0".
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+%!TEX spellcheck = English (Aspell)
+
+\documentclass[11pt]{article}
+\usepackage{jeffe,handout,graphicx}
+\usepackage[utf8]{inputenc}	% Allow some non-ASCII Unicode in source
+\usepackage{fourier-orns}
+
+\usepackage{enumerate}
+\usepackage{stmaryrd}
+
+\def\Cdot{\mathbin{\text{\normalfont \textbullet}}}
+\def\Sym#1{\texttt{\color{BrickRed}#1}}
+
+
+% =========================================================
+\begin{document}
+
+\thispagestyle{empty}
+
+\begin{center}
+\Large\textbf{CS/ECE 374 A \,\decosix\, Fall 2019}%
+\\
+\LARGE\textbf{\decothreeleft~ Homework 0 ~\decothreeright}%
+\\[0.5ex]
+\large Due Tuesday, September 3, 2019 at 8pm
+\end{center}
+
+\bigskip
+\hrule
+\bigskip
+\begin{itemize}
+
+\item
+\textbf{Each student must submit individual solutions for this homework.}   For all future homeworks, groups of up to three students can submit joint solutions.
+
+\item
+\textbf{Submit your solutions electronically to Gradescope as PDF files.}  Submit a separate PDF file for each numbered problem.  If you plan to typeset your solutions, please use the \LaTeX\ solution template on the course web site.  If you must submit scanned handwritten solutions, please use a black pen on blank white paper and a high-quality scanner app (or an actual scanner).
+
+\item
+You are \EMPH{not} required to sign up on Gradescope or Piazza with your real name and your illinois.edu email address; you may use any email address and alias of your choice.  However, to give you credit for the homework, we need to know who Gradescope thinks you are.  \textbf{Please fill out the web form linked from the course web page.}
+
+\end{itemize}
+
+\bigskip
+\hrule
+\bigskip
+
+\begin{center}
+\Large \textbf{\color{Red}\lefthand~
+	Some important course policies
+	~\righthand}\\
+\end{center}
+
+\begin{itemize}
+\item
+\textbf{You may use any source at your disposal}—paper, electronic, or human—but you \EMPH{must} cite \EMPH{every} source that you use, and you \EMPH{must} write everything yourself in your own words.  See the academic integrity policies on the course web site for more details. 
+
+\item
+The answer \EMPH{“I don’t know”} (and \emph{nothing} else) is worth 25\% partial credit on any required problem or subproblem on any homework or exam.  We will accept synonyms like “No idea” or “WTF” or “\verb-\(ó_ò)/-”, but you must write \emph{something}.
+
+\quad On the other hand, only the homework problems you submit actually contribute to your overall course grade, so submitting “I don’t know” for an entire numbered homework problem will almost certainly hurt your grade more than submitting nothing at all.
+
+\item
+\textbf{Avoid the Three Deadly Sins!}  Any homework or exam solution that breaks any of the following rules will be given an \textcolor{Red}{\EMPH{automatic zero}}, unless the solution is otherwise perfect.  Yes, we really mean it.  We’re not trying to be scary or petty (Honest!), but we do want to break a few common bad habits that seriously impede mastery of the course material.
+\begin{itemize}\itemsep0pt
+\item Always give complete solutions, not just examples.
+\item Always declare all your variables, in English.  In particular, always describe the precise problem your algorithm is supposed to solve.
+\item Never use weak induction.
+\end{itemize}
+
+\end{itemize}
+\bigskip
+\hrule
+
+\begin{center}
+\large \textbf{See the course web site for more information.}\\[1ex]\normalsize
+If you have any questions about these policies,\\
+please don’t hesitate to ask in class, in office hours, or on Piazza.
+\end{center}
+
+\hrule
+\vfil
+\vfil
+\vfil
+%----------------------------------------------------------------------
+\headers{CS/ECE 374 A}{Homework 0 (due September 3)}{Fall 2019}
+
+\begin{enumerate}
+\parindent 1.5em \itemsep 4ex plus 0.5fil
+
+%----------------------------------------------------------------------
+\item
+The infamous Scottish computational arborist Seòras na Coille has a favorite 26-node binary tree, whose nodes are labeled with the letters of the English alphabet.  Preorder and inorder traversals of his tree yield the following letter sequences:
+\begin{align*}
+	\text{Preorder:~}	& \Sym{U X M Z I W J E O V N H R D T K G L Y A F S Q P C B} \\
+	\text{Inorder:~}	& \Sym{Z M X E J V O W I N D R T H U G K F A Q P S Y C B L}
+\end{align*}
+
+\begin{enumerate}
+\item
+List the nodes in Professor na Coille’s tree according to a postorder traversal.
+
+\item
+Draw Professor na Coille’s tree.
+
+\end{enumerate}
+You do \emph{not} need to prove that your answers are correct.  \Hint{It may be easier to write a short Python program than to figure this out by hand.}
+
+%----------------------------------------------------------------------
+\item
+For any string $w \in \set{\Sym0,\Sym1}^*$, let $\emph{sort}(w)$ denote the string obtained by sorting the characters in $w$.  For example, $\emph{sort}(\Sym{010101}) = \Sym{000111}$.  The \emph{sort} function can be defined recursively as follows:
+\[
+	\emph{sort}(w) :=
+		\begin{cases}
+			\e & \text{if $w=\e$}\\
+ 			\Sym0\cdot \emph{sort}(x)	& \text{if $w = \Sym0 x$} \\
+			\emph{sort}(x)\Cdot \Sym1	& \text{if $w = \Sym1 x$} \\
+\end{cases}
+\]
+
+\begin{enumerate}
+\item
+Prove that $\#(\Sym0,\emph{sort}(w)) = \#(\Sym0, w)$ for every string $w \in \set{\Sym0,\Sym1}^*$.
+\item
+Prove that $\emph{sort}(w\Cdot 1) = \emph{sort}(w)\Cdot 1$ for every string $w \in \set{\Sym0,\Sym1}^*$.
+\item
+Prove that $\emph{sort}(\emph{sort}(w)) = \emph{sort}(w)$ for every string $w \in \set{\Sym0,\Sym1}^*$.
+\end{enumerate}
+%
+\textbf{Think about these two problems on your own; do not submit solutions:}
+%
+\begin{enumerate}
+\item[(d)]
+Prove that $x\Cdot\Sym0 \ne y\Cdot\Sym1$ for all strings $x,y\in \set{\Sym0,\Sym1}^*$.  
+\item[(e)]
+Prove that $\emph{sort}(w) \ne x\Cdot \Sym{10} \Cdot y$, for all strings $w,x,y\in \set{\Sym0,\Sym1}^*$.
+\end{enumerate}
+
+You may assume without proof that $\#(a, uv) = \#(a, u) + \#(a, v)$ for any symbol $a$ and any strings $u$ and $v$, or any other result proved in class, in lab, or in the lecture notes.  Your proofs for later parts of this problem can assume earlier parts even if you don’t prove them.  Otherwise, your proofs must be formal and self-contained.
+
+
+%----------------------------------------------------------------------
+\newpage
+\item 
+Consider the set of strings $L \subseteq \set{\Sym0,\Sym1}^*$ defined recursively as follows:
+\begin{itemize}
+\item The empty string $\e$ is in $L$.
+\item For any strings $x$ in $L$, the strings $\Sym0 x \Sym1$ and $\Sym1 x\Sym0$ are also in $L$.
+\item For any two \emph{nonempty} strings $x$ and $y$ in $L$, the string $x\Cdot y$ is also in $L$.
+\item These are the only strings in $L$.
+\end{itemize}
+This problem asks you to prove that $L$ is the set of all strings $w$ where the number of \Sym0s is equal to the number of \Sym1s.
+More formally, for any string $w$, let $\Delta(w) = \#(\Sym1,w) - \#(\Sym0,w)$, or equivalently,
+\[
+	\Delta(w) = \begin{cases}
+		0 & \text{if $w=\e$} \\
+		\Delta(x) - 1 & \text{if $w = \Sym0x$} \\
+		\Delta(x) + 1 & \text{if $w = \Sym1x$} \\
+	\end{cases}
+\]
+%
+\begin{enumerate}
+\item
+Prove that the string \Sym{11011100101000} is in $L$.
+\item
+Prove that $\Delta(w) = 0$ for every string $w\in L$.
+\item
+Prove that $L$ contains every string $w\in \set{\Sym0,\Sym1}^*$ such that $\Delta(w) = 0$.
+\end{enumerate}
+%
+You can assume the following properties of the $\Delta$ function, for all strings $w$ and $z$.
+\begin{itemize}
+\item
+Addition: $\Delta(w z) = \Delta(w) + \Delta(z)$.
+
+\item
+Downward interpolation:  If $\Delta(w z) > 0$ and $\Delta(z) < 0$, then there are strings~$x$ and $y$ such that $w = x y$ and $\Delta(y z) = 0$.
+
+\item
+Upward interpolation:  If $\Delta(w z) < 0$ and $\Delta(z) > 0$, then there are strings~$x$ and $y$ such that $w = x y$ and $\Delta(y z) = 0$.
+\end{itemize}
+The interpolation properties are a type of “intermediate value theorem”.
+\textbf{Think about how to prove these properties yourself.}
+
+You can also assume any other result proved in class, in lab, or in the lecture notes. Otherwise, your proofs must be formal and self-contained.
+
+
+\end{enumerate}
+
+\newpage
+
+\subsection*{Solved Problems}
+
+\emph{Each homework assignment will include at least one solved problem, similar to the problems assigned in that homework, together with the grading rubric we would apply \emph{if} this problem appeared on a homework or exam.  These model solutions illustrate our recommendations for structure, presentation, and level of detail in your homework solutions.  Of course, the actual \textbf{content} of your solutions won’t match the model solutions, because your problems are different!}
+
+\medskip
+\begin{enumerate}
+\item[4.]
+The \EMPH{reversal $w^R$} of a string $w$ is defined recursively as follows:
+\[	
+	w^R := \begin{cases}
+		\e & \text{if $w=\e$} \\[0.5ex]
+		x^R \Cdot a & \text{if $w=a\cdot x$}
+	\end{cases}
+\]
+A \EMPH{palindrome} is any string that is equal to its reversal, like \Sym{AMANAPLANACANALPANAMA}, \hbox{\Sym{RACECAR}}, \Sym{POOP}, \Sym{I}, and the empty string.
+\begin{enumerate}
+\item
+Give a recursive definition of a palindrome over the alphabet $\Sigma$.
+
+\item
+Prove $w = w^R$ for every palindrome $w$ (according to your recursive definition).  
+
+\item
+Prove that every string $w$ such that $w = w^R$ is a palindrome (according to your recursive definition).
+
+\end{enumerate}
+You may assume without proof the following statements for all strings $x$, $y$, and $z$:
+\begin{itemize}
+\item Reversal reversal: $(x^R)^R = x$
+\item Concatenation reversal: $(x\Cdot y)^R = y^R\Cdot x^R$
+\item Right cancellation:  If $x\Cdot z = y\Cdot z$, then $x = y$.
+\end{itemize}
+
+\begin{Solution}
+~ % start (a) on new line
+\begin{enumerate}
+\item
+A string $w\in\Sigma^*$ is a palindrome if and only if either
+\begin{itemize}
+\item $w = \e$, or
+\item $w = a$ for some symbol $a\in\Sigma$, or
+\item $w = axa$ for some symbol $a\in\Sigma$ and some \emph{palindrome} $x\in\Sigma^*$.
+\end{itemize}
+
+\begin{rubric}
+2 points = \textonehalf\ for each base case + 1 for the recursive case.
+No credit for the rest of the problem unless this part is correct.
+\end{rubric}
+
+
+\medskip
+\item
+Let $w$ be an arbitrary palindrome.
+
+Assume that $x = x^R$ for every palindrome $x$ such that $\abs{x}<\abs{w}$.
+
+There are three cases to consider (mirroring the definition of “palindrome”):
+\begin{itemize}
+\item
+If $w = \e$, then $w^R = \e$ by definition, so $w = w^R$.
+
+\item
+If $w = a$ for some symbol $a\in\Sigma$, then $w^R = a$ by definition, so $w = w^R$.
+
+\item
+Finally, if $w = axa$ for some symbol $a\in\Sigma$ and some palindrome $x\in P$, then 
+\begin{align*}
+	w^R
+	&=	(a \cdot x \Cdot a)^R		\\
+	&=	(x\Cdot a)^R \Cdot a		& \text{by definition of reversal} \\
+	&=	a^R \Cdot x^R \Cdot a		& \text{by concatenation reversal}\\
+	&=	a \Cdot x^R \Cdot a			& \text{by definition of reversal} \\
+	&=	a \Cdot x \Cdot a			& \text{by the inductive hypothesis} \\
+	&=	w							& \text{by assumption}
+\end{align*}
+\end{itemize}
+In all three cases, we conclude that $w = w^R$. \EOS
+
+\begin{rubric}
+4 points: standard induction rubric (scaled)
+\end{rubric}
+
+\medskip
+\item
+Let $w$ be an arbitrary string such that $w = w^R$.
+
+Assume that every string $x$ such that $\abs{x} < \abs{w}$ and $x = x^R$ is a palindrome.
+
+There are three cases to consider (mirroring the definition of “palindrome”):
+\begin{itemize}\parskip0.25ex
+\item 
+If $w = \e$, then $w$ is a palindrome by definition.
+
+\item 
+If $w = a$ for some symbol $a\in\Sigma$, then $w$ is a palindrome by definition.
+
+\item
+Otherwise, we have $w = ax$ for some symbol $a$ and some \emph{non-empty} string~$x$.
+  
+The definition of reversal implies that $w^R = (ax)^R = x^R a$.
+
+Because $x$ is non-empty, its reversal $x^R$ is also non-empty.
+
+Thus, $x^R = by$ for some symbol $b$ and some string~$y$.
+
+It follows that $w^R = bya$, and therefore $w = (w^R)^R = (bya)^R = a y^R b$.
+
+\medskip
+\emph{[At this point, we need to prove that $a=b$ and that $y$ is a palindrome.]}
+\medskip
+
+Our assumption that $w = w^R$ implies that $bya = a y^R b$.
+
+The recursive definition of string equality immediately implies $a=b$.
+
+\medskip
+Because $a=b$, we have $w = ay^Ra$ and $w^R = a y a$.
+
+The recursive definition of string equality implies $y^Ra = ya$.
+
+Right cancellation implies that $y^R = y$.
+
+The inductive hypothesis now implies that $y$ is a palindrome.
+
+\medskip
+We conclude that $w$ is a palindrome by definition.
+\end{itemize}
+In all three cases, we conclude that $w$ is a palindrome.\needqedtrue\EOS
+
+\begin{rubric}
+4 points: standard induction rubric (scaled).
+\end{rubric}
+
+\end{enumerate}
+\end{Solution}
+
+\end{enumerate}
+
+\newpage
+\begin{Rubric}{Standard induction rubric}
+For problems worth 10 points:
+\begin{itemize}\itemsep0pt
+\item[+] 1 for explicitly considering an \emph{arbitrary} object.
+
+\item[+] 2 for a valid \EMPH{strong} induction hypothesis
+\begin{itemize}\itemsep0pt
+\item \textbf{\textcolor{Red}{Deadly Sin!}} Automatic zero for stating a weak induction hypothesis, unless the rest of the proof is \emph{absolutely perfect}.
+\end{itemize}
+
+\item[+] 2 for explicit exhaustive case analysis
+\begin{itemize}\itemsep0pt
+\item No credit here if the case analysis omits an infinite number of objects.  (For example: all odd-length palindromes.)
+\item $-1$ if the case analysis omits an finite number of objects.  (For example: the empty string.)
+\item $-1$ for making the reader infer the case conditions.  Spell them out!
+\item No penalty if the cases overlap (for example: even length at least~2, odd length at least 3, and length at most~5.)
+\end{itemize}
+
+\item[+] 1 for cases that do not invoke the inductive hypothesis (“base cases”)
+\begin{itemize}\itemsep0pt
+\item No credit here if one or more “base cases” are missing.
+\end{itemize}
+
+\item[+] 2 for correctly applying the \EMPH{stated} inductive hypothesis
+\begin{itemize}\itemsep0pt
+\item No credit here for applying a \EMPH{different} inductive hypothesis, even if that different inductive hypothesis would be valid.
+\end{itemize}
+
+\item[+] 2 for other details in cases that invoke the inductive hypothesis (“inductive cases”)
+\begin{itemize}\itemsep0pt
+\item No credit here if one or more “inductive cases” are missing.
+\end{itemize}
+\end{itemize}
+For (sub)problems worth less than 10 points, scale and round to the nearest half-integer.
+\end{Rubric}
+
+
+\end{document}

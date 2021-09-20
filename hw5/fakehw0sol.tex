@@ -1,0 +1,285 @@
+% ---------
+%  Compile with "pdflatex hw0".
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt]{article}
+
+\usepackage{jeffe,handout,graphicx,float}
+\usepackage[utf8]{inputenc}		% Allow some non-ASCII Unicode in source
+\usepackage{amsmath}
+\newtheorem{lemma}{Lemma}
+\usepackage{xcolor}
+
+% =========================================================
+%   Define common stuff for solution headers
+% =========================================================
+\pagenumbering{arabic}
+\Class{CS/ECE 374 B}
+\Semester{Fall 2019}
+\Authors{2}
+\AuthorOne{Jin Yucheng}{yucheng9}
+\AuthorTwo{Fan Wenyan}{wenyanf2}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+%\Section{}
+
+% =========================================================
+\begin{document}
+
+% ---------------------------------------------------------
+
+
+\HomeworkHeader{5}{1}	% homework number, problem number
+
+\begin{solution}
+
+\item (a) Suppose that the input string is $w$ and the parsed regular expression is $r$, the algorithm decides whether $w \in L(r)$.
+\item Before we solve this problem, consider the text segmentation problem in Notes 2.5.
+\item The problem requires us to segment a string into English words, for example, segment this string:
+\begin{center}
+BLUESTEMUNITROBOTHEARTHANDSATURNSPIN
+\end{center}
+\item The general strategy is: \textit{select the first output word, and recursively segment the rest of the input string.}
+\item So the algorithm for text segmentation is:
+\item \qquad \underline{SplitTable($A[1...n]$):}
+\item \qquad $\text{  }1:$\textbf{ if} $n = 0$:
+\item \qquad $\text{  } 2:$\qquad  return TRUE
+\item \qquad $\text{  } 3:$\textbf{ for} $i \leftarrow 1 $ to $n$:
+\item \qquad $\text{  } 4:$\qquad \textbf{ if} IsWord($A[1...i]$):
+\item \qquad $\text{  } 5:$\qquad \qquad  \textbf{ if} SplitTable($A[i+1...n]$):
+\item \qquad $\text{  } 6:$\qquad \qquad \qquad return TRUE
+\item \qquad $\text{  } 7:$ return FALSE
+\item The problem of checking whether the input string $w$ belongs to the language $L(r)$ can also be solved by backtracing, the first step is to \textit{recursively devide the string into two parts, namely the prefix $w[1...i]$ and suffix $w[i+1...n]$.}
+\item Why can we first divide the string into two parts and then solve the problem? Here is my reason: 
+\item The parsed regular expression is in essence a tuple, we denote $r[i]$ as the $i^{th}$ element in this tuple. Regardless of the regular expression for the empty language, there are four cases to consider:
+\begin{itemize}
+\item if $r[0] = (a) (a \in \Sigma) / (\epsilon)$, the tuple is $(a)$ or $(\epsilon)$.
+\item if $r[0] = \cdot$, the tuple represents the concatenation of two regular expressions, namely the $1^{st}$ and $2^{nd}$ elements in the tuple, $r[1] \cdot r[2]$, the tuple is $(\cdot, r[1], r[2])$.
+\item if $r[0] = +$, the tuple represents the union of two regular expressions, namely the $1^{st}$ and $2^{nd}$ elements in the tuple, $r[1] + r[2]$, the tuple is $(+, r[1], r[2])$.
+\item if $r[0] = *$, the tuple represents the Kleene closure of a regular expression, namely the $1^{st}$ element in the tuple, $r[1]^{*}$, the tuple is $(*, r[1])$.
+\end{itemize} 
+\item We first take $r[0]$ and then divide the string by the following rules:
+\begin{itemize}
+\item if $r[0] = (a) (a \in \Sigma) / (\epsilon)$, this is a base case where the string could no longer be divided, it has already been divided into a character or an empty string, the character should be $a$ in order to match the regular expression.
+\item if $r[0] = \cdot$, the prefix $w[1...i]$ should match $r[1]$ and the suffix $w[i+1...n]$ should match $r[2]$.
+\item if $r[0] = +$, we do not split the string and we check if the string matches $r[1]$ or if the string matches $r[2]$.
+\item if $r[0] = *$, both the prefix $w[1...i]$ and suffix $w[i+1...n]$ should match $r[1]$.
+\end{itemize} 
+\item So the algorithm for problem (a) is:
+\item \qquad \underline{MatchRegex($w[1...n], r$):}
+\item \qquad $\text{  }1:$\textbf{ if} $r[0] = \cdot$:
+\item \qquad $\text{  } 2:$\qquad  \textbf{for} $i \leftarrow 1$ to $n$: 
+\item \qquad $\text{  } 3:$\qquad  \qquad return MatchRegex($w[1...i], r[1]$) $AND$ MatchRegex($w[i+1...n], r[2]$)
+\item \qquad $\text{  } 4:$\textbf{ else if} $r[0] = +$:
+\item \qquad $\text{  } 5:$\qquad return MatchRegex($w[1...n], r[1]$) $OR$ MatchRegex($w[1...n], r[2]$): 
+\item \qquad $\text{  } 6:$\textbf{ else if} $r[0] = *$:
+\item \qquad $\text{  } 7:$\qquad  \textbf{for} $i \leftarrow 1$ to $n$: 
+\item \qquad $\text{  } 8:$\qquad  \qquad return MatchRegex($w[1...i], r[1]$) $AND$ MatchRegex($w[i+1...n], r[1]$): 
+\item \qquad $\text{  } 9:$\textbf{ else}:
+\item \qquad $\text{  } 10:$ \quad { }return w = $r[0]$
+
+\item Furthermore, line 3, line 5 and line 8 can be modified to reduce the number of recursive calls as:
+\item \qquad \underline{MatchRegex($w[1...n], r$):}
+\item \qquad $\text{  } 1 \text{   }:$\textbf{ if} $r[0] = \cdot$:
+\item \qquad $\text{  } 2 \text{   }:$\qquad  \textbf{for} $i \leftarrow 1$ to $n$: 
+\item \qquad $\text{  } 3 \text{   }:$\qquad  \qquad  \textbf{ if} MatchRegex($w[1...i], r[1]$): 
+\item \qquad $\text{  } 4 \text{   }:$\qquad  \qquad \qquad return MatchRegex($w[i+1...n], r[2]$)
+\item \qquad $\text{  } 5 \text{   }:$\qquad  \qquad { }return FALSE
+\item \qquad $\text{  } 6 \text{   }:$\textbf{ else if} $r[0] = +$:
+\item \qquad $\text{  } 7 \text{   }:$\qquad  \textbf{ } \textbf{ if} MatchRegex($w[1...n], r[1]$): 
+\item \qquad $\text{  } 8 \text{   }:$\qquad  \qquad return TRUE
+\item \qquad $\text{  } 9\text{   }:$\qquad   { }{ } return MatchRegex($w[1...n], r[2]$)
+\item \qquad $\text{  } 10:$\textbf{ else if} $r[0] = *$:
+\item \qquad $\text{  } 11:$\qquad  \textbf{ }\textbf{ for} $i \leftarrow 1$ to $n$: 
+\item \qquad $\text{  } 12:$\qquad  \qquad  \textbf{ if} MatchRegex($w[1...i], r[1]$): 
+\item \qquad $\text{  } 13:$\qquad  \qquad \qquad return MatchRegex($w[i+1...n], r[1]$)
+\item \qquad $\text{  } 14:$\qquad  \qquad \text{ }return FALSE
+\item \qquad $\text{  } 15:$\textbf{ else}:  \qquad  \# base case happens when the string could no longer be divided
+\item \qquad $\text{  } 16:$ \qquad { }return w = $r[0]$ \qquad \# return TRUE if the character matches $a$ ($a \in \Sigma$ or $\epsilon $)
+\\
+\item (b) The time complexity is:
+\begin{center}
+$\Theta(2^{mn})$
+\end{center}
+\item Denote $T(n, m)$ as the runtime if the size of the string is $n$ and the size of the grammar is $m$
+\begin{itemize}
+\item consider $\cdot$, $T(n, m)$ is bounded by checking all possibilities of splits:
+\begin{center}
+$T(n, 1) \leq 2n$
+\item
+$T(n, m) = \Theta((2n)^{m})$
+\end{center}
+\item consider +, $T(n, m)$ is bounded by checking both $r[1]$ and $r[2]$:
+\begin{center}
+$T(n, m) \leq T(n, m-1) + T(n, m-1) + \Theta(1)$
+\item
+$T(n, m) = \Theta(2^{m})$
+\end{center}
+\item consider $*$, $T(n, m)$ is bounded by every character except the last can match the Kleen star:
+\begin{center}
+$T(n, 1) \leq 2^{n}$
+\item
+$T(n, m) = \Theta(2^{nm})$
+\end{center}
+\end{itemize}
+\item When there are only Kleene stars, the worst-case runtime is bounded by $\Theta(2^{mn})$.
+\\
+\item(c) Just see $m$ as a constant in (b), we find that $+$ takes constant time, $*$ takes $\Theta(2^{n})$ time, and $\cdot$ takes some polynomial time because $T(n, m) = \Theta((2n)^{m})$.
+\item The time complexity is $\Theta(2^{n} \cdot n^{c})$, where $c$ is a constant.  
+
+\end{solution}
+
+\HomeworkHeader{5}{2}	% homework number, problem number
+\setcounter{page}{4}
+\begin{solution}
+\item (a) CNF grammar is defined as:
+\begin{center}
+$X \rightarrow YZ$\\
+$X \rightarrow a$\\
+$S \rightarrow \epsilon$\\
+\end{center}
+\item Where $X, Y, Z$ are non-terminals, $a$ is a terminal, $S$ is the start non-terminal.
+\item We can see the process of deriving the string under CNF as a binary tree, where a square represents a non-terminal and a circle represents a terminal.
+\begin{figure}[H]
+\centering
+\includegraphics [width = 10cm]{WechatIMG15.png}
+\item
+\end{figure}
+\item We need both a string $w[1...n]$ (also assume we know its length) and a start non-terminal $X$ to check if the string can be generated by a CNF grammar. If $X \rightarrow YZ$, denote $Y$ as $X[0]$ and $Z$ as $X[1]$, The algorithm is as follows:
+
+\item \qquad \underline{CheckCNF($w[1...n], X$):}
+\item \qquad $\text{  } 1 \text{   }:$\textbf{ if} $n = 0$:	\qquad \# base case if the string is empty, return TRUE if $X$ derives $\epsilon$
+\item \qquad $\text{  } 2 \text{   }:$\qquad  return $X \rightarrow \epsilon$
+\item \qquad $\text{  } 3 \text{   }:$\textbf{ else if} $n = 1$:  \# base case if the string is a character, return TRUE if $X$ derives $w$
+\item \qquad $\text{  } 4 \text{   }:$\qquad  return $X \rightarrow w$
+\item \qquad $\text{  } 5 \text{   }:$\textbf{ else} :\qquad \quad { } \# $X$ is an internal non-terminal node in the tree
+\item \qquad $\text{  } 6 \text{   }:$\qquad  $Y \leftarrow X[0]$
+\item \qquad $\text{  } 7 \text{   }:$\qquad  $Z \leftarrow X[1]$
+\item \qquad $\text{  } 8 \text{   }:$\qquad \textbf{for} $Y, Z$ in \{Y, Z\}:	\quad { } { } \# check two possible non-terminal derivations
+\item \qquad $\text{  } 9 \text{   }:$\qquad \qquad \textbf{for} $i \leftarrow 1$ to $n-1$:	\# check every prefix and its corresponding suffix
+\item \qquad $\text{  } 10:$\qquad \qquad \qquad \textbf{if} CheckCNF$(w[1...i], Y)$:
+\item \qquad $\text{  } 11:$\qquad  \qquad \qquad \qquad  return CheckCNF$(w[i...n], Z)$
+\item \qquad $\text{  } 12:$\qquad return FALSE
+
+\item (b) $m$ is the size of the grammar and $n$ is the size of the input string.
+\item Because every non-terminal can transit either to two non-terminals or one character, the maximum number of production rules is bounded by $\Theta(m^{2})$.
+\item Suppose to check a string of length $n$ takes $T(n)$ time, since we iterate through every possible prefix and its corresponding sufix, 
+we have:
+\begin{center}
+$T(n) = [T(1) + T(n-1)] + [T(2) + T(n-2)] + ... = 2 \Sigma^{n-1}_{1} T(i) = S_{n-1}$\\
+\end{center}
+The total runtime is:
+\begin{center}
+$2 m^{2} \Sigma^{n-1}_{1} T(i)$
+\end{center}
+\item Since $T(n) = 2 m^{2} S_{n-1}$ and $S_{n} - S_{n-1} = 2m^{2}T(n) = 2m^{2}S_{n-1}$, we have:
+\begin{center}
+$S_{n} = (2m^{2} + 1)S_{n-1} =... = (2m^{2} + 1)^{n-1} S_{1}$
+\end{center}
+\item Since $S_{1}$ is bounded by $\Theta(1)$, $T(n)$ is therefore bounded by:
+\begin{center}
+$\Theta((2m^{2} + 1)^{n-1})$
+\end{center}
+\item Or simpler,
+\begin{center}
+$\Theta(m^{n})$
+\end{center}
+\end{solution}
+
+\HomeworkHeader{5}{3}	% homework number, problem number
+\setcounter{page}{6}
+\begin{solution}
+\item (a) The Euclidean algorithm to find GCD by subtraction is:
+\item \qquad \underline{EuclidGCD($x, y$):}
+\item \qquad $\text{  }1:$\textbf{ if} $x = y$:
+\item \qquad $\text{  } 2:$\qquad  return $x$
+\item \qquad $\text{  } 3:$\textbf{ else if} $x > y$:
+\item \qquad $\text{  } 4:$\qquad return EuclidGCD($x-y, y$)
+\item \qquad $\text{  } 5:$\textbf{ else}  
+\item \qquad $\text{  } 6:$\qquad return EuclidGCD($x, y-x$)
+\item If we consider every subtraction takes $\Theta(1)$ time first, denote $x + y = n$, the worst case happens when one of x or y is 1 (such like EuclidGCD($x, 1$)), we take linear steps to get the GCD, 1, so in this case the worst-case time complexity is $\Theta(n)$.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+\item Now every subtraction takes $\Theta(logx + logy) = \Theta(logxy)$ time, the worst case also happens when one of x or y is 1. Since $x + y = n$, the maximal value of $\Theta(logxy)$ will be realized when $xy$ is maximized, that is, when $x = y = \frac{n}{2}$, the corresponding $ \Theta(logxy) =  \Theta(log\frac{n^{2}}{4}) = 2\Theta(log\frac{n}{4})$, the asymptotic bound is $\Theta(logn)$. Because the value of $\Theta(logxy)$ when one of x or y is 1 is also bounded by $\Theta(logn)$, so we conclude that each subtraction takes $\Theta(logn)$ time. Therefore, just like the case where each subtraction takes $\Theta(1)$ time, only the number of function calls influences time complexity, the worst case still happens when one of x or y is 1, and the worst-case time complexity is:
+\begin{center}
+$\Theta((x+y)logxy) = \Theta(nlogn)$
+\end{center}
+\item
+(b) The Euclidean algorithm to find GCD using mod operator is:
+\item \qquad \underline{ModGCD($x, y$):}
+\item \qquad $\text{  }1:$\textbf{ if} $y = 0$:
+\item \qquad $\text{  } 2:$\qquad  return $x$
+\item \qquad $\text{  } 3:$\textbf{ else if} $x > y$:
+\item \qquad $\text{  } 4:$\qquad return ModGCD($y, x\%y$)  \qquad \# return $y$ when $x\%y$ = 0
+\item \qquad $\text{  } 5:$\textbf{ else}  
+\item \qquad $\text{  } 6:$\qquad return ModGCD($x, y\%x$)  \qquad \# return $x$ when $y\%x$ = 0
+\item By observing the function structure, we can rewrite an equivalent function as:
+\item \qquad \underline{ModGCDSimplified($x, y$):}
+\item \qquad $\text{  }1:$\textbf{ if} $x \% y = 0$:
+\item \qquad $\text{  } 2:$\qquad  return $y$
+\item \qquad $\text{  } 3:$\textbf{ else}:
+\item \qquad $\text{  } 4:$\qquad return ModGCDSimplified($y, x\%y$)
+\newpage
+\item Line 1 in ModGCDSimplified means that if $x$ can be divided by $y$, the GCD of $x$ and $y$ is $y$, while line 4 and line 6 in ModGCD just take a step further (see my comments).
+\item Denote $(x_{i}, y_{i})$ as the value of $(x, y)$ pair where ModGCDSimplified performs $i$ steps, 
+\begin{itemize}
+\item for $i = 1$,  $y_{1} = 0$,
+\item for $i = 2$, $y \geq 1$,
+\item for $i > 2$, $(x_{k+1}, y_{k+1}) \rightarrow (x_{k}, y_{k}) \rightarrow (x_{k-1}, y_{k-1})$, we have:\\
+\\ $x_{k} = y_{k+1}$,
+\\ $x_{k-1} = y_{k}$,
+\\ $y_{k-1} = x_{k} mod y_{k}$,\\
+\\ Therefore $x_{k} = q \cdot y_{k} + y{k-1}$ for some $q \geq 1$, so:
+\begin{center}
+$y_{k+1} \geq y_{k} + y_{k-1}$
+\item
+$y_{k} \geq Fibonacci y_{k-1}$
+\end{center}
+Where $Fibonacci y_{k}$ represents the $k^{th}$ Fibonacci number, which is approximated by:
+\begin{center}
+$Fibonacci y_{n} \approx \frac{1}{\sqrt{5}}(\frac{1+\sqrt{5}}{2})^{n}$
+\end{center}
+\end{itemize}
+\item The number of recursive calls is therefore logarithmic based on the sum of $x$ and $y$, bounded by $\Theta(log(x+y))$, since every mod operation takes $\Theta(logxlogy)$ time, the time complexity is:
+\begin{center}
+$\Theta(log(x+y)logxlogy) = \Theta((logx)^{3})$
+\end{center}
+\item (c) The binary Euclidean algorithm to find GCD is:
+\item \qquad \underline{BinaryGCD($x, y$):}
+\item \qquad $\text{  }1:$\textbf{ if} $x = y$:
+\item \qquad $\text{  } 2:$\qquad  return $x$
+\item \qquad $\text{  } 3:$  $evenx \leftarrow x \% 2 = 0$ \qquad \# "$\leftarrow$" is the assignment operator, "=" means equal
+\item \qquad $\text{  } 4:$  $eveny \leftarrow y \% 2 = 0$ \qquad \# line 3 and line 4 assign TRUE if x $\%$ 2 / y $\%$ 2 equals 0
+\item \qquad $\text{  } 5:$\textbf{ if} $evenx$ and $eveny$:
+\item \qquad $\text{  } 6:$\qquad return 2 $\cdot$ BinaryGCD($x//2, y//2$)  \qquad \# "//" forces integer division
+\item \qquad $\text{  } 7:$\textbf{ else if} $evenx$:  
+\item \qquad $\text{  } 8:$\qquad return BinaryGCD($x//2, y$)  
+\item \qquad $\text{  } 9:$\textbf{ else if} $eveny$:  
+\item \qquad $\text{  } 10:$\quad { }{ }return BinaryGCD($x, y//2$) 
+\item \qquad $\text{  } 11:$\textbf{ else if} $x > y$:  
+\item \qquad $\text{  } 12:$\quad { }{ }return BinaryGCD($(x - y)//2, y$)  
+\item \qquad $\text{  } 13:$\textbf{ else}:  
+\item \qquad $\text{  } 14:$\quad { }{ }return BinaryGCD($x, (y - x)//2$)   
+\item Let $n$ denote the total number of bits needed to represent both $x$ and $y$, $n = log(x \cdot y)$. We can see that $x - y$ takes $\Theta(logx+logy)$ time, which is equivalent to $\Theta(n)$ time; $x//2$ takes $\Theta(logx)$ time, which is also bounded by $\Theta(n)$.
+\item There are 3 cases to consider:
+\begin{itemize}
+\item if both $x$ and $y$ are even, we will remove two binary digits with constant time, let $T(n)$ denotes the total time we take if the total number of bits needed to represent both $x$ and $y$ is $n$:
+\begin{center}
+$T(n) = T(n-2) + \Theta(1)$
+\end{center}
+\item if one of $x$ or $y$ is even:
+ \begin{center}
+$T(n) = T(n-1) + \Theta(1)$
+\end{center}
+\item if both $x$ and $y$ are not even, we need to delete $m$ ($m = 1$ is the worst case) bits using linear steps, therefore,
+\begin{center}
+$T(n) = T(n-1) + \Theta(n)$
+\end{center}
+\end{itemize}
+The third case is the worst case, the time complexity is therefore:
+\begin{center}
+$\Theta(n^{2}) = \Theta(log(xy)^2)$
+\end{center}
+
+\end{solution}
+
+\end{document}

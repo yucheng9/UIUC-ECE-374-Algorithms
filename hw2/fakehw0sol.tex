@@ -1,0 +1,100 @@
+% ---------
+%  Compile with "pdflatex hw0".
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt]{article}
+\usepackage{jeffe,handout,graphicx,float}
+\usepackage[utf8]{inputenc}		% Allow some non-ASCII Unicode in source
+\usepackage{tikz}
+\usepackage{verbatim}
+\usetikzlibrary{automata,positioning,arrows, calc}
+
+% =========================================================
+%   Define common stuff for solution headers
+% =========================================================
+\pagenumbering{arabic}
+\Class{CS/ECE 374 B}
+\Semester{Fall 2019}
+\Authors{2}
+\AuthorOne{Jin Yucheng}{yucheng9}
+\AuthorTwo{Fan Wenyan}{wenyanf2}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+%\Section{}
+
+% =========================================================
+\begin{document}
+
+% ---------------------------------------------------------
+
+% -------------------------------------------------------------------------------------
+% Change authors again ; you can omit this if the authors aren’t changing.
+%\AuthorOne{Hunson Abadeer}{habadeer}
+%\AuthorTwo{Martin Mertens}{mmertens}
+%\AuthorThree{Urgence Evergreen}{gunterno}
+
+\HomeworkHeader{2}{3}
+
+\begin{solution}
+\
+\item Let $M = (\Sigma, Q, s, A, \delta)$ be an arbitrary DFA that accepts $L$. We define a new NFA $N = (\Sigma, Q^{'}, s^{'}, A^{'}, \delta^{'})$ with $\epsilon$-transitions that accepts palindromes in $L(M)$.
+\begin{center}
+$L(N) = (x \in L(M)$ |  $x = x^{R})$
+\item $Q^{'} = (Q \times Q \times Q) \cup {s^{'}}$
+\item $s^{'}$ is an explicit state in $Q^{'}$
+\item $A^{'} = \{(h, h, h)$  | $ h \in Q\}$
+\item $\delta^{'}(s^{'}, \epsilon) = \{(s, h, m)$ |  $h \in Q, m \in A\}$
+\item $\delta^{'}((p, h, q), a) = \{(\delta(p, a), h, \delta^{-1}(q, a))\}$ 
+\end{center}
+\item Assume $x = ww^{R}$ is an arbitrary string over $\Sigma$, and $x$ is in $L(M)$. By definition,  $x$ is a palindrome, we want to prove that $x \in L(N)$:
+\begin{center}
+$\delta(s^{'}, x) \in A^{'}$
+\end{center}
+\item In the definition above, we denote that:
+\begin{center}
+$\delta(s, ww^{R}) = q$, $q  \in A$
+\item
+$\delta^{*}(s, w) = h$ and $\delta^{*}(s, w^{R}) = h$, $h  \in Q$
+\item
+$\delta^{*}(h, w^{R}) = q$, $q  \in A$
+\item
+$\delta^{'}((a, b, c), x) = \{\delta(a, x), b, \delta^{-1}(c, x)\}$, $a, b, c  \in Q$
+\end{center}
+There are two cases to consider,
+\begin{itemize}
+\item if $x$ = $\epsilon$, then the empty string is accepted by definition:
+\begin{center}
+$\delta^{'}(s^{'}, \epsilon) = \{(s, h, m)$ |  $h \in Q, m \in A\}$
+\end{center}
+\item if $x$ is not empty, we need to prove there exists an accepting state $(h, h, h)$, such that:
+\begin{center}
+$(h, h, h) \in \delta^{'*}((s^{'}), x)$
+\end{center}
+The proof is as follows:
+\begin{center}
+	it is equivalent to prove $(h, h, h) \in \{(\delta^{'*}((s, h, q), w)$ | $h \in Q, q \in A)\}$ 
+\item
+	$\delta^{'*}((s, h, q), w) = \{(\delta^{*}(s, w), h, \delta^{-1*}(q, w))\}$ 
+\item
+since 
+$\delta^{*}(s, w) = h$, $h  \in Q$
+and
+$\delta^{*}(h, w) = q$ (because we can replace $w^{R}$ with $w$), $q  \in A$,
+\item therefore $ h \in \delta^{-1*}(q, w)$
+\end{center}
+So $(h, h, h) \in \{(\delta^{'*}((s, h, q), w)$ | $h \in Q, q \in A)\}$. 
+\end{itemize}
+\item In conclusion, $N$ is the NFA that accepts all palindromes in $L(M)$. 
+\item
+Sorry that my friends reminded me of adding proof of the NFA rejects any string that is not in $L(M)$.
+\begin{figure}[H]
+\centering
+\includegraphics [width = 18cm]{WechatIMG13.png}
+\item
+\end{figure}
+\end{solution}
+
+
+
+\end{document}

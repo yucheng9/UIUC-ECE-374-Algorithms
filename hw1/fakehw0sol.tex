@@ -1,0 +1,309 @@
+% ---------
+%  Compile with "pdflatex hw0".
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt]{article}
+\usepackage{jeffe,handout,graphicx,float}
+\usepackage[utf8]{inputenc}		% Allow some non-ASCII Unicode in source
+\usepackage{tikz}
+\usepackage{verbatim}
+\usetikzlibrary{automata,positioning,arrows, calc}
+
+% =========================================================
+%   Define common stuff for solution headers
+% =========================================================
+\pagenumbering{arabic}
+\Class{CS/ECE 374 B}
+\Semester{Fall 2019}
+\Authors{2}
+\AuthorOne{Jin Yucheng}{yucheng9}
+\AuthorTwo{Fan Wenyan}{wenyanf2}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+%\Section{}
+
+% =========================================================
+\begin{document}
+
+% ---------------------------------------------------------
+
+
+\HomeworkHeader{1}{1}	% homework number, problem number
+
+\begin{solution}
+%These are, without exception, inappropriate inquiries, a phrase which here means “all the wrong questions”.  Here are the questions you should have asked instead:
+%\begin{enumerate}[(a)]
+%\item Why would someone say something was stolen when it was never theirs to begin with?
+%\item How could someone who was missing be in two places at once?
+%\item Why would someone destroy one building when they really wanted to destroy another?
+%\end{enumerate}
+%\begin{enumerate} [(a)]
+
+\item (a) The regular expression of the desired language $L$ is defined as:
+\begin{itemize}
+\item ${w \in L}$ if $w$ contains substring $ei$ which is \textbf{NOT} preceded by $c$ to be $cei$.
+\item ${w \in L}$ if $w$ contains substring $cie$. 
+\end{itemize}
+\item Therefore, the regular expression is:
+\begin{center}
+\item $[a-z]^{*}[^\wedge c]ei[a-z]^{*}$ + $[^\wedge c]^{*}ei[a-z]^{*}$ + $[a-z]^{*}cie[a-z]^{*}$ 
+\end{center}
+\item (b) The graphical representation is:
+\\
+\\
+\begin{tikzpicture}
+
+\tikzset{
+	->,
+	>=stealth,
+        node distance=3cm, 
+	initial text = $\epsilon$,
+}
+
+    \node[state, initial] (s) {$s$};
+    \node[state, above right of = s] (e) {$e$};
+    \node[state, accepting, right of = e] (ei/cie) {$ei/cie$};
+    \node[state, below right of = s] (c) {$c$};
+    \node[state, right of = c] (ci) {$ci$};
+    %\node[state, accepting, right of = ci] (cie) {$cie$};
+  
+    \draw   
+    (s) edge[below right] node{$e$} (e)
+    (s) edge[above right] node{$c$} (c)
+    (e) edge[above right] node{$i$} (ei/cie)
+    (c) edge[above right] node{$i$} (ci)
+(e) edge[above right] node{$c$} (c)
+(c) edge[loop below] node{$c$} (c)
+(e) edge[loop above] node{$e$} (e)
+	(s)edge[loop above, left]node{$[^\wedge c ^\wedge e]$}(s)
+(ei/cie)edge[loop above]node{$[a-z]$}(ei/cie)
+ (e)edge[bend right, above]node{$[^\wedge c ^\wedge e^\wedge i]$}(s)
+(c)edge[bend left, below]node{$[^\wedge c ^\wedge i]$}(s)
+(ci)edge[bend left, below]node{$c$}(c)
+    (ci) edge[above right] node{$e$} (ei/cie)
+%(ci)edge[bend left = 90, below]node{$[^\wedge c ^\wedge e]$}(s)
+(ci).. controls ($(ci)+(4cm,-4cm)$) and ($(s)+(-4cm,-4cm)$) .. node{$[^\wedge c ^\wedge e]$} (s);
+ 
+\end{tikzpicture}
+
+\begin{itemize}
+\item $s$ is the start state.
+\item $c$ means we have just read the initial $c$ of $cie$. 
+\item $e$ means we have just read the initial $e$ of $ei$. 
+\item $ci$ means we have read the $ci$ part of $cie$. 
+\item $ei/cie$ means we have read the substring $ei$ (without preceding $c$) or $cie$, and it is the accepting state. 
+\end{itemize}
+
+\item This graphical representation captures all the cases, because it traces two possible path, $e -> ei$ and $c -> ci -> cie$, to reach the accepting state. Also it avoids "$c -> ce -> cei$", because it forces the state $c$ to transit to state $s$ if it receives $e$. 
+
+\item (c) The graphical representation of the DFA that satisfies "all strings that \textbf{END UP WITH THE SUBSTRING} $ie$ (without preceding $c$) or $cei$ (without preceding substring $ie$ (without preceding $c$) or $cei$)" is:
+\\
+\\
+\begin{tikzpicture}
+
+\tikzset{
+	->,
+	>=stealth,
+        node distance=3cm, 
+	initial text = $\epsilon$,
+}
+
+    \node[state, initial] (s) {$s$};
+    \node[state, above right of = s] (i) {$i$};
+    \node[state, accepting, right of = i] (ie/cei) {$ie/cei$};
+    \node[state, below right of = s] (c) {$c$};
+    \node[state, right of = c] (ce) {$ce$};
+    %\node[state, accepting, right of = ci] (cie) {$cie$};
+  
+    \draw   
+    (s) edge[below right] node{$i$} (i)
+    (s) edge[above right] node{$c$} (c)
+    (i) edge[above right] node{$e$} (ie/cei)
+    (c) edge[above right] node{$e$} (ce)
+(i) edge[above right] node{$c$} (c)
+(c) edge[loop below] node{$c$} (c)
+(i) edge[loop above] node{$i$} (i)
+	(s)edge[loop above, left]node{$[^\wedge c ^\wedge i]$}(s)
+(i)edge[bend right, above]node{$[^\wedge c ^\wedge e^\wedge i]$}(s)
+(c)edge[bend left, below]node{$[^\wedge c ^\wedge e]$}(s)
+(ce)edge[bend left, below]node{$c$}(c)
+  (ce) edge[above right] node{$i$} (ie/cei)
+%(ci)edge[bend left = 90, below]node{$[^\wedge c ^\wedge e]$}(s)
+(ce).. controls ($(ce)+(4cm,-4cm)$) and ($(s)+(-4cm,-4cm)$) .. node{$[^\wedge c ^\wedge i]$} (s);
+\draw [red](ie/cei) edge[loop above] node{$[a-z]$} (ie/cei);
+ 
+\end{tikzpicture}
+\begin{itemize}
+\item $s$ is the start state.
+\item $c$ means we have just read the initial $c$ of $cei$. 
+\item $i$ means we have just read the initial $i$ of $ie$. 
+\item $ce$ means we have read the $ce$ part of $cei$. 
+\item $ie/cei$ means we have finally verified that the string ends up with substring $ie$ (without preceding $c$) or $cei$ without preceding $ie$ (without preceding $c$) or $cei$.
+\end{itemize}
+
+\item A very important thing is that the transition function of this DFA is not a total function, this is shown as we've indicated with a red loop, since we will not discuss the states after we find the first substring $ie$ (without preceding $c$) or $cei$. 
+\item Then we show how to construct a DFA that "recognizes words that both break the rules and follow it". We can break the definition into two parts: first, the words (strings) break the rules; second, they also follow the rules, and we can see the desired DFA as a "concatenation" of these two parts. The DFA given above in (c) just verifies the words (strings) that have a substring that follows the rules, the DFA in (b) verifies the words (strings) that have a substring that breaks the rules, therefore, we can "concatenate" them together:                                                                                                                                 
+\\
+\\
+\begin{figure}[H]
+\centering
+\includegraphics [width = 16cm]{WechatIMG2.png}
+\end{figure}
+\item Where subscripts B and F in states of the right half represent we have already found the words (strings) that break/follow the rules, A1 and A2 are accepting states where the strings that go into A1 first break the rules, and the strings that go into A2 first follow the rules. 
+
+%\end{enumerate}
+
+\end{solution}
+
+
+% ---------------------------------------------------------
+% Change authors for all future solutions
+\AuthorOne{Jin Yucheng}{yucheng9}
+%\AuthorTwo{Friday Caliban}{fcaliban}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+\HomeworkHeader{1}{2}
+\setcounter{page}{4}
+\newtheorem{lemma}{Lemma}
+
+\begin{solution}
+
+\item (a) The regular expression for (a) is:
+\begin{center}
+$0$$(0 + 1)^{*}$$1$ + $1$$(0 + 1)^{*}$$0$
+\end{center}
+The DFA is:
+\begin{figure}[H]
+\centering
+\includegraphics [width = 9cm]{IMG4.png}
+\item
+\end{figure}
+
+Where,
+\begin{itemize}
+\item $S$ is the start state.
+\item $A$ means the string starts with 0 but the current last digit is not 1.
+\item $B$ means the string starts with 1 but the current last digit is not 0.
+\item $C$ means the string starts with 0 and the last digit is 1.
+\item $D$ means the string starts with 1 and the last digit is 0.
+\end{itemize}
+
+\item
+
+\item (b) The regular expression for (b) is:
+\begin{center}
+$0^{*}$$(1^{*}000^{*})^{*}$$1^{*}$$0^{*}$
+\end{center}
+The DFA is:
+\begin{figure}[H]
+\centering
+\includegraphics [width = 10cm]{WechatIMG6.png}
+\item
+\end{figure}
+
+Where,
+\begin{itemize}
+\item $S$ is the start state.
+\item $A$ means the string currently does not have substring 101 but the current last digit is 1
+\item $B$ means the string currently does not have substring 101 but the current last-two-digit is 10.
+\item $C$ means the string has substring 101.
+\end{itemize}
+
+\item
+
+\item (c) The regular expression for (c) is:
+\begin{center}
+$0^{*}1^{*}0^{*}$
+\end{center}
+The DFA is:
+\begin{figure}[H]
+\centering
+\includegraphics [width = 10cm]{WechatIMG8.png}
+\item
+\end{figure}
+
+Where,
+\begin{itemize}
+\item $S$ is the start state.
+\item $A$ means the string currently does not have subsequence 101 but has subsequence 1.
+\item $B$ means the string currently only has 0's.
+\item $C$ means the string currently does not have subsequence 101 but has subsequence 10.
+\item $D$ means the string has subsequence 101.
+\end{itemize}
+
+\end{solution}
+
+% -------------------------------------------------------------------------------------
+% Change authors again ; you can omit this if the authors aren’t changing.
+%\AuthorOne{Hunson Abadeer}{habadeer}
+%\AuthorTwo{Martin Mertens}{mmertens}
+%\AuthorThree{Urgence Evergreen}{gunterno}
+
+\HomeworkHeader{1}{3}
+\setcounter{page}{6}
+
+\begin{solution}
+
+$L(M_{1}), L(M_{2}), L(M_{3})$ are defined as follows:
+\begin{itemize}
+\item $L(M_{1})$ is the set of all strings that contain substring 101.
+\item $L(M_{2})$ is the set of all strings that contain substring 111.
+\item $L(M_{3})$ is the set of all strings that contain both substrings 101 and 111.
+%\item $awb \in L_{bad}$ for $a, b \in \{1, 0\}$ if $w \in L_{bad}$ and both $aw_1w_2$ and $w_{n-1}w_nb$ are not 000 or 111, where $|w| = n$
+\end{itemize}
+\item $M_{1}$, $M_{2}$, and $M_{3}$ are represented as:
+\begin{figure}[H]
+\centering
+\includegraphics [width = 16cm]{IMG2.png}
+\item
+\end{figure}
+\item
+Where in $M_{1}$:
+\begin{itemize}
+\item $S$ is the start state.
+\item $A$ means we have just read the initial 1 of substring 101. 
+\item $B$ means we have read the 10 part of substring 101. 
+\item $C$ means we have found substring 101.
+\end{itemize}
+\item
+\item
+
+Where in $M_{2}$:
+\begin{itemize}
+\item $S$ is the start state.
+\item $D$ means we have just read the initial 1 of substring 111. 
+\item $E$ means we have read the 11 part of substring 111. 
+\item $F$ means we have found substring 111.
+\end{itemize}
+\item
+\item
+Where in $M_{3}$:
+\begin{itemize}
+\item $S$ is the start state.
+\item $G$ means we have not yet found both substrings 101 and 111 but have just read the initial 1 of substrings 101 and 111. 
+\item $H$ means we have not yet found both substrings 101 and 111 but have just read the initial 10 of substring 111. 
+\item $I$ means we have not yet found both substrings 101 and 111 but have just read the initial 11 of substring 111. 
+\item $J$ means we have not yet found substring 101 but have found substring 111, and we have found the initial 1 of substring 101.
+\item $K$ means we have not yet found substring 111 but have found substring 101, and we have found the initial 1 of substring 111.
+\item $L$ means we have not yet found substring 111 but have found substring 101, and we have found the 11 part of substring 111.
+\item $M$ means we have not yet found substring 101 but have found substring 111, and we have found the 10 part of substring 101.
+\item $N$ means we have found both substrings 101 and 111.
+\item $X$ means we have not yet found substring 101 but have found substring 111, and we have to start over to find 111.
+\item $Y$ means we have not yet found substring 111 but have found substring 101, and we have to start over to find 101.
+\end{itemize}
+
+Obviously, $M_{1}$, $M_{2}$, and $M_{3}$ satisfy all of the points above:
+\begin{itemize}
+\item ($a$) $|Q_{1}|$ = $|Q_{2}|$ = 4 > 2.
+\item ($b$) $M_{1}$ and $M_{2}$ use the minimal number of states since the substrings have length 3, and we have to determine them one symbol by one symbol, and there are 4 cases: not match, the first symbol matches, the first two symbols match, all three symbols match.
+\item ($c$) By definition $L(M_{1}) \not= L(M_{2})$.
+\item ($d$) By definition $L(M_{3}) = L(M_{1}) \cap L(M_{2})$.
+\item ($e$) There are infinite strings that have substrings 101 and 111.
+\item ($f$) $|Q_{3}|$ = 11 < 16 = $|Q_{1}|$ $\times$ $|Q_{2}|$
+\end{itemize}
+
+\end{solution}
+
+
+
+\end{document}

@@ -1,0 +1,182 @@
+% ---------
+%  Compile with "pdflatex hw0".
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt]{article}
+\usepackage{jeffe,handout,graphicx}
+\usepackage[utf8]{inputenc}		% Allow some non-ASCII Unicode in source
+
+% =========================================================
+%   Define common stuff for solution headers
+% =========================================================
+\pagenumbering{arabic}
+\Class{CS/ECE 374 B}
+\Semester{Fall 2019}
+\Authors{1}
+\AuthorOne{Jin Yucheng}{yucheng9}
+%\AuthorTwo{Friday Caliban}{fcaliban}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+%\Section{}
+
+% =========================================================
+\begin{document}
+
+% ---------------------------------------------------------
+
+
+\HomeworkHeader{0}{1}	% homework number, problem number
+
+\begin{solution}
+%These are, without exception, inappropriate inquiries, a phrase which here means “all the wrong questions”.  Here are the questions you should have asked instead:
+%\begin{enumerate}[(a)]
+%\item Why would someone say something was stolen when it was never theirs to begin with?
+%\item How could someone who was missing be in two places at once?
+%\item Why would someone destroy one building when they really wanted to destroy another?
+%\end{enumerate}
+%\begin{enumerate} [(a)]
+
+\item (a) Let $x$ and $y$ be arbitrary strings.
+\item Assume for any string $w$ where ${|w| < |x|}$ that ${digsum(w \bullet y) = digsum(w) + digsum(y)}$.
+\item There are two cases to consider:
+\begin{itemize}
+\item 
+If $x$ = $\epsilon$, then
+\begin{align*}
+	digsum(x \bullet y) 
+	& = digsum(\epsilon \bullet y)  & \text{because ${x}$ = $\epsilon$} \\
+	& = digsum(y) & \text{by Lemma 1} \\
+	& = 0 + digsum(y) \\
+	& = digsum(\epsilon) + digsum(y) & \text{because ${digsum(\epsilon) = 0}$} \\
+	& = digsum(x) + digsum(y)  & \text{because ${x}$ = $\epsilon$} \\
+\end{align*}
+\item
+Otherwise, $x = aw$ for some symbol $a \in \{1, 2, 3, 4, 5, 6, 7, 8, 9\}$ and some string $w$.
+\begin{align*}
+	digsum(x \bullet y) 
+	& = digsum(aw \bullet y)  & \text{because ${x}$ = $aw$} \\
+	& = digsum(a \cdot (w \bullet y)) & \text{by definition of $\bullet$} \\
+	& = a + digsum(w \bullet y) & \text{by definition $digsum(ax) = a + digsum(x)$} \\
+	& = a + digsum(w) + digsum(y) & \text{by the induction hypothesis} \\
+	& = digsum(aw) + digsum(y)  & \text{by definition $digsum(ax) = a + digsum(x)$} \\
+	& = digsum(x) + digsum(y) & \text{because ${x}$ = $aw$} \\
+\end{align*}
+\end{itemize}
+\item Also, since $digsum(y \bullet x) = digsum(y) + digsum(x) = digsum(x) + digsum(y)$, we conclude that,
+\begin{center}
+$digsum(x \bullet y) = digsum(y \bullet x) = digsum(x) + digsum(y)$.
+\end{center}
+
+\item
+\item (b) Let $x$ be an arbitrary string.
+\item Assume for any string $w$ where $|w| < |x|$ that $digsum(w^R) = digsum(w)$.
+\item There are two cases to consider:
+\begin{itemize}
+\item 
+If $x$ = $\epsilon$, then
+\begin{align*}
+	digsum(x^R) 
+	& = digsum(\epsilon)  & \text{because ${x}$ = $\epsilon$ and $\epsilon ^ R = \epsilon$} \\
+	& = digsum(x) & \text{because ${x}$ = $\epsilon$} \\
+\end{align*}
+\item
+Otherwise, $x = aw$ for some symbol $a \in \{1, 2, 3, 4, 5, 6, 7, 8, 9\}$ and some string $w$.
+\begin{align*}
+	digsum(x ^ R) 
+	& = digsum((aw) ^ R)  & \text{because ${x}$ = $aw$} \\
+	& = digsum(w^R a) & \text{by definition of $^R$} \\
+	& = digsum(w^R \bullet a) & \text{because $a$ can be seen as a string of just one symbol} \\
+	& = digsum(w^R) + digsum(a) & \text{by conclusion of (a)} \\
+	& = digsum(w) + digsum(a) & \text{by the induction hypothesis} \\
+	& = digsum(a) + digsum(w) \\
+	& = digsum(a \bullet w) & \text{by conclusion of (a)} \\
+	& = digsum(x) & \text{because ${x}$ = $aw$} \\
+\end{align*}
+\end{itemize}
+\item In both cases, we conclude that $digsum(x^R) = digsum(x)$.
+%\end{enumerate}
+
+\end{solution}
+
+
+% ---------------------------------------------------------
+% Change authors for all future solutions
+\AuthorOne{Jin Yucheng}{yucheng9}
+%\AuthorTwo{Friday Caliban}{fcaliban}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+\HomeworkHeader{0}{2}
+\setcounter{page}{3}
+\newtheorem{lemma}{Lemma}
+
+\begin{solution}
+\item
+\begin{enumerate}[(a)]
+\item
+By definition $\textcircled{1}$ $a \in L_{odd} $ \text{for} $a \in \{1, 3, 5, 7, 9 \}$, the string
+374 obviously fails to match since it contains 3 symbols.
+\\
+By definition $\textcircled{2}$ $ax \in L_{odd} $ \text{for} $a \in \{0, 2, 4, 6, 8 \}$ and $x \in L_{odd}$, the string
+374 obviously fails to match since its first symbol is 3.
+\\
+By definition $\textcircled{3}$ $axb \in L_{odd} $ \text{for} $a, b \in \{1, 3, 5, 7,  9 \}$ and $x \in L_{odd}$, the string
+374 can be written as 3 $\cdot$ 7 $\cdot$ 4, 3 $\in$ $\{1, 3, 5, 7,  9 \}$ but 4 $\not\in \{1, 3, 5, 7, 9 \}$. 374 fails to match definition $\textcircled{3}$, therefore, 374 $\not\in L_{odd}$.
+
+\item
+$x$ is an arbitrary string that x $\in$ $L_{odd}$.
+\\
+Assume for any string $w$ where $|w| < |x|$ that w $\in L_{odd}$ and digsum(w) is odd.
+\\
+There are 3 cases to consider:
+\begin{itemize}
+\item If $x$ is in the form of "$a$", by definition $\textcircled{1}$ $a \in L_{odd} $ \text{for} $a \in \{1, 3, 5, 7, 9 \}$, $x$ is either 1 or 3 or 5 or 7 or 9, $digsum(x)$ is also either 1 or 3 or 5 or 7 or 9, so $digsum(x)$ is odd.
+\item If $x$ is in the form of "$aw$", by definition $\textcircled{2}$ $aw \in L_{odd} $ \text{for} $a \in \{0, 2, 4, 6, 8 \}$ and $w \in L_{odd}$, we have:
+\begin{align*}
+	digsum(x) 
+	& = digsum(aw)  & \text{because ${x}$ = $aw$} \\
+	& = a + digsum(w) & \text{by definition $digsum(ax) = a + digsum(x)$} \\
+	& a \text{ is even} & \text{$a \in \{0, 2, 4, 6, 8 \}$}\\
+	& digsum(w) \text{ is odd} & \text{by the induction hypothesis} \\
+	& a + digsum(w) \text{ is odd}
+\end{align*}
+\item If $x$ is in the form of "$awb$", by definition $\textcircled{3}$ $awb \in L_{odd} $ \text{for} $a, b \in \{1, 3, 5, 7,  9 \}$ and $w \in L_{odd}$, we have:
+\begin{align*}
+	digsum(x) 
+	& = digsum(awb)  & \text{because ${x}$ = $awb$} \\
+	& = digsum(a \bullet (wb)) & \text{by definition of $\bullet$} \\
+	& = a + digsum(wb) & \text{by definition $digsum(ax) = a + digsum(x)$} \\
+	& = a + digsum(w \bullet b) & \text{by definition of $\bullet$} \\
+	& = a + b + digsum(w) & \text{by definition $digsum(ax) = a + digsum(x)$} \\
+	& a, b \text{ are odd} & \text{$a, b \in \{1, 3, 5, 7, 9 \}$}\\
+	& digsum(w) \text{ is odd} & \text{by the induction hypothesis} \\
+	& a + b + digsum(w) \text{ is odd}
+\end{align*}
+\end{itemize}
+\end{enumerate}
+\item In conclusion, for any $x \in L_{odd}, digsum(x)$ is odd.
+\end{solution}
+
+% ---------------------------------------------------------
+% Change authors again ; you can omit this if the authors aren’t changing.
+%\AuthorOne{Hunson Abadeer}{habadeer}
+%\AuthorTwo{Martin Mertens}{mmertens}
+%\AuthorThree{Urgence Evergreen}{gunterno}
+
+\HomeworkHeader{0}{3}
+\setcounter{page}{4}
+
+\begin{solution}
+
+Assume $w$ is an arbitrary string over $\{1, 0\}$, $L_{bad}$ is defined as follows:
+\begin{itemize}
+\item $w$ $\in L_{bad}$ for $|w| < 3$ 
+\item for $|w| \geq 3$ and $w = ax$, $w \in L_{bad}$ for $a \in \{1, 0\}$ if $x \in L_{bad}$ and $ax_1x_2$ is not 000 or 111
+%\item $awb \in L_{bad}$ for $a, b \in \{1, 0\}$ if $w \in L_{bad}$ and both $aw_1w_2$ and $w_{n-1}w_nb$ are not 000 or 111, where $|w| = n$
+\end{itemize}
+The idea is the same as Problem(2). First we define base case, that if the string is only consisted of less than 3 digits, then it belongs to $L_{bad}$ since it can not contain 000 or 111. Second, if the string has 3 or more digits, we can express the string as the concatenation of its leading digit and the remaining string. The remaining string is a substring of the string to be examined, if it not belong to $L_{bad}$, then the superstring must have 000 or 111 and not belong to $L_{bad}$ either. If it belongs to $L_{bad}$, we guarantee that from $x_3$ to the last digit $x_n$, there is no 000 or 111, but we must take a step further to examine whether $ax_1x_2$ is 000 or 111, if it is not 000 or 111, then the superstring belongs to $L_{odd}$.
+
+\end{solution}
+
+
+
+\end{document}

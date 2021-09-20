@@ -1,0 +1,182 @@
+% ---------
+%  Compile with "pdflatex hw0".
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt]{article}
+\usepackage{jeffe,handout,graphicx,float}
+\usepackage[utf8]{inputenc}		% Allow some non-ASCII Unicode in source
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{indentfirst}
+\usepackage{CJK}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usetikzlibrary{automata,positioning,arrows, calc}
+
+% =========================================================
+%   Define common stuff for solution headers
+% =========================================================
+\pagenumbering{arabic}
+\Class{CS/ECE 374 B}
+\Semester{Fall 2019}
+\Authors{2}
+\AuthorOne{Jin Yucheng}{yucheng9}
+\AuthorTwo{Fan Wenyan}{wenyanf2}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+%\Section{}
+
+% =========================================================
+\begin{document}
+
+% ---------------------------------------------------------
+
+
+\HomeworkHeader{3}{1}	% homework number, problem number
+
+\begin{solution}
+%These are, without exception, inappropriate inquiries, a phrase which here means “all the wrong questions”.  Here are the questions you should have asked instead:
+%\begin{enumerate}[(a)]
+%\item Why would someone say something was stolen when it was never theirs to begin with?
+%\item How could someone who was missing be in two places at once?
+%\item Why would someone destroy one building when they really wanted to destroy another?
+%\end{enumerate}
+%\begin{enumerate} [(a)]
+\item Denote the language in each case as $L$.
+\item (a) The language is regular.
+\item \qquad We can denote this language with a regular expression as:
+\begin{center}
+$L = \sum_{n = 0}^{9} (0 + 1 + ... + 9 + \#)^{*}n\#^{n}n(0 + 1 + ... + 9 + \#)^{*}$
+\end{center}
+\item \qquad Where $n \in \{0, ..., 9 \}$.
+\begin{itemize}
+\item Let $x$ be an arbitrary string that ${x \in L}$, then $x$ must contain the substring $c\#^{c}c$, where $c \in \{0, ..., 9 \}$.
+\item For any string $y = a \cdot c\#^{c}c \cdot b$ that contains the substring $c\#^{c}c$, where $c \in \{0, ..., 9 \}$, the prefix $a$ and suffix $b$ of $y$ could be any string over $\Sigma = \{0, ..., 9, \#\}$, and $(0 + 1 + ... + 9 + \#)^{*} $denotes the set of all strings over $\Sigma$, so $a, b \in (0 + 1 + ... + 9 + \#)^{*}$. Therefore, $y \in L$.
+\end{itemize}
+\item In conclusion, every string in $L$ contains the substring $c\#^{c}c$ and any string that has the substring $c\#^{c}c$ is in $L$, so we prove that $L$ can be expressed as the regular expression $\sum_{n = 0}^{9} (0 + 1 + ... + 9 + \#)^{*}n\#^{n}n(0 + 1 + ... + 9 + \#)^{*}$. Therefore, $L$ is regular.
+\\
+\item (b) The language is not regular.
+\\
+\item \qquad Let $F = \{<n+1>\#^{1} | n \in \mathbb{N} \}$.
+\item \qquad Let $x$ and $y$ be arbitrary elements of $F$.
+\item \qquad Then $x = <i+1>\#^{1}$, $y = <j+1>\#^{1}$, for some natural numbers $i \neq j$.
+\item \qquad Let $z = \#^{j}$.
+\item \qquad Then $xz = <i+1>\#^{j+1} \notin L$, since $i+1 \neq j+1$.
+\item \qquad And $yz =  <i+1>\#^{j+1} \in L$.
+\item \qquad Thus, $F$ is a fooling set of $L$.
+\item \qquad Because $F$ is infinite, $L$ can not be regular.  \\
+
+\item (c) The language is regular.
+\item \qquad We can denote this language with a regular expression as:
+\begin{center}
+$L = \sum_{n = 1}^{15600} (a + b + ... + z)^{*} \cdot f(n) \cdot (a + b + ... + z)^{*} \cdot f(n) \cdot (a + b + ... + z)^{*}$
+\end{center}
+\item \qquad Where $n \in \{0, 1, ..., 15600 \}$, and $f(n)$ is a bijective function that maps $n$ to its corresponding 
+\item \qquad 3-character string:
+\begin{center}
+$f(1) = aaa, f(2) = aab, ..., f(15600) = zzz$
+\end{center}
+\item \qquad There are $P^{26}_{3}$ = 15600 permutations of a 3-character string, so $n \in \{0, 1, ..., 15600 \}$, and 
+\item \qquad $f(n) \in \{aaa, aab, ... zzz\}$.
+\item \qquad Similar to (a), 
+\begin{itemize}
+\item Let $X$ be an arbitrary string that ${X \in L}$, then $X$ must contain the substring $Z = f(n) \in \{aaa, aab, ... zzz\}$, where $n \in \{1, 2, ..., 15600 \}$, that at least appears twice.
+\item For any string $Y = A \cdot Z \cdot B \cdot Z \cdot C$ that contains the substring $Z = f(n) \in \{aaa, aab, ... zzz\}$, where $n \in \{1, 2, ..., 15600 \}$, the prefix $A$, suffix $C$, and substring $B$ of $Y$ could be any string over $\Sigma = \{a, ..., z\}$, and $(a + b + ... + z)^{*} $denotes the set of all strings over $\Sigma$, so $A, B, C \in (a + b + ... + z)^{*}$. Therefore, $Y \in L$.
+\end{itemize}
+\item In conclusion, every string in $L$ contains the substring $Z = f(n) \in \{aaa, aab, ... zzz\}$, where $n \in \{1, 2, ..., 15600 \}$, that appears at least twice, and any string that has the substring $Z$ appears at least twice is in $L$, so we prove that $L$ can be expressed as the regular expression $\sum_{n = 1}^{15600} (a + b + ... + z)^{*} \cdot f(n) \cdot (a + b + ... + z)^{*} \cdot f(n) \cdot (a + b + ... + z)^{*}$. Therefore, $L$ is regular.
+\end{solution}
+
+
+% ---------------------------------------------------------
+% Change authors for all future solutions
+\AuthorOne{Jin Yucheng}{yucheng9}
+%\AuthorTwo{Friday Caliban}{fcaliban}
+%\AuthorThree{Duncan Quagmire}{dquagmir}
+\HomeworkHeader{3}{2}
+\setcounter{page}{3}
+\newtheorem{lemma}{Lemma}
+
+\begin{solution}
+\item Function $f: \Sigma_{1} \rightarrow \Sigma_{2}^{*}$ maps an arbitrary symbol $a$ in $\Sigma_{1}$ to a string $w$ in $\Sigma_{2}^{*}$, such that,
+\begin{center}
+$f(a) = w$, $f^{-1}(w) = a$, where $a \in \Sigma_{1}, w \in \Sigma_{2}^{*}$\\
+\item
+$f(\epsilon) = \epsilon$, and $f(ax) = f(a) \cdot f(x) = w \cdot f(x)$, where $a \in \Sigma_{1}, x \in \Sigma_{1}^{*}$\\
+\end{center}
+\item Suppose the given DFA $M$ which accepts $L$ can be expressed as $M = (\Sigma_{1}, Q_{1}, \delta_{1}, s_{1}, A_{1})$, we can construct the corresponding NFA $N$ that accepts $f(L)$ as $N = (\Sigma_{2}, Q_{2}, \delta_{2}, s_{2}, A_{2})$, where,
+
+\item \qquad \qquad $\Sigma_{2}$ contains symbols in $f(a), a \in \Sigma_{1}$\\
+\item \qquad \qquad $Q_{2} = (Q_{1} \times a \times p) \cup \{s_{2}\}, a \in \Sigma_{1}$ and $p$ is a prefix of $f(a)$\\
+\item \qquad \qquad $A_{2} = \{(s, a, w) | s \in A_{1}\}$\\
+\item \qquad \qquad $s_{2}$ is an explicit state in $Q_{2}$\\
+\item \qquad \qquad $\delta_{2}(s_{2}, \epsilon) = \{(s_{1}, a, \epsilon)| a \in \Sigma_{1}\} \in A_{2}$\\
+\item \qquad $$\delta_{2}((s, a, w), m) =
+\begin{cases}
+(s, a, w \cdot m) & if  w \cdot m \notin \{x | x = f(b), b \in \Sigma_{1} \} \\ 
+\{(\delta_{1}(s, b), n, \epsilon) | n \in \Sigma_{1}\} & if  w \cdot m \in \{x | x = f(b), b \in \Sigma_{1} \}
+\end{cases}
+$$
+\item Furthermore,
+\begin{itemize}
+\item for every symbol $a \in \Sigma_{1}$,  there exists a string $w \in \Sigma_{2}^{*}$, which is $a$'s homomorphism in $\Sigma_{2}^{*}$, following $f: \Sigma_{1} \rightarrow \Sigma_{2}^{*}$ that $f(a) = w$.
+\item for every string $x$ over $\Sigma_{1}$ such that $x \in L$ that is accepted by $M$, its corresponding homomorphism $f(x) \in f(L)$ is also accepted by $N$: $x \in L, \delta_{1}^{*}(s_{1}, x) \in A_{1} \Longrightarrow f(x) \in f(L), \delta_{2}^{*}(s_{2}, f(x)) \in A_{2}$.
+\end{itemize}
+Suppose $w$ is an arbitrary string over $\Sigma_{1}$, for every string $x$ shorter than $w$ over $\Sigma_{1}, f(x)$ is accepted by $N$,
+\begin{center}
+$x \in L, \delta_{1}^{*}(s_{1}, x) \in A_{1} \Longrightarrow f(x) \in f(L), \delta_{2}^{*}(s_{2}, f(x)) \in A_{2}$
+\end{center}   
+There are two cases to consider,
+\begin{itemize}
+\item Suppose $w = \epsilon$, by definition $f(w) = f(\epsilon) = \epsilon$, therefore,\\
+\begin{align*}
+	\delta_{2}^{*}(s_{2}, f(w))
+	& = \delta_{2}^{*}(s_{2}, f(\epsilon))  \\
+\\
+	& = \delta_{2}^{*}(s_{2}, \epsilon) \\
+\\
+	& = \{(s_{1}, a, \epsilon) | a \in \Sigma_{1}\} \in A_{2} 
+\end{align*}
+So $N$ accepts $f(\epsilon)$.
+\item Suppose $w = x \cdot a$ for some symbol $a \in \Sigma_{1}$ and some string $x \in \Sigma_{1}^{*}$. Assume $f(x) = y$ and $f(a) = z$. Let,
+\\
+\begin{center}
+$\delta_{2}^{*}(s_{2}, f(x)) = \{(s_{n}, b, \epsilon) | b \in \Sigma_{1}\} $
+\end{center}
+\begin{flalign*}
+\qquad \quad \delta_{2}^{*}(s_{2}, f(w)) 
+	& = \delta_{2}^{*}(s_{2}, f(x \cdot a))  \\
+\\
+	& = \delta_{2}^{*}(s_{2}, f(x) \cdot z)   \\
+\\
+	& = \{\delta_{2}^{*}((s_{n}, b, \epsilon), z) | b \in \Sigma_{1}\} 
+\end{flalign*}
+Suppose $z$ can be written as $z[1]z[2]...z[n]$, or $z[1:n]$, where $z[1], z[2], z[n]$ are symbols in $z$, we can write,
+\begin{flalign*}
+ \delta_{2}^{*}(s_{2}, f(w)) 
+	& = \{\delta_{2}^{*}((s_{n}, b, \epsilon), z) | b \in \Sigma_{1}\}  \\
+\\
+	& = \{\delta_{2}^{*}((s_{n}, b, z[1]), z[2:n]) | b \in \Sigma_{1}\} \\
+\\
+	& = \{\delta_{2}^{*}((s_{n}, b, z[1:2]), z[3:n]) | b \in \Sigma_{1}\} \\
+\\      
+	& ... \\
+\\
+	& = \{\delta_{2}^{*}((s_{n}, b, z[1:n-1]), z[n]) | b \in \Sigma_{1}\} \\
+\\
+	& \text{by definition and assumption of $\delta_{2}, \delta_{2}^{*}$, we can write,} \\
+\\
+	& = \{(\delta_{1}(s_{n}, a), d, \epsilon) | a, d \in \Sigma_{1}, f(a) = z\} \\
+\\
+	& = \{((\delta_{1}(\delta_{1}^{*}(s_{1}, x), a), d, \epsilon) | a, d \in \Sigma_{1}, f(a) = z\} \\
+\\
+	& = \{(\delta_{1}^{*}(s_{1}, xa), d, \epsilon) | a, d \in \Sigma_{1}, f(a) = z\} \\
+\end{flalign*}
+Since $\delta_{1}^{*}(s_{1}, xa) \in A_{1} \Longrightarrow (\delta_{1}^{*}(s_{1}, xa), d, \epsilon) \in A_{2}$,
+$w = xa$, therefore,
+$\delta_{2}^{*}(s_{2}, f(w)) = \{(\delta_{1}^{*}(s_{1}, xa), d, \epsilon) | a, d \in \Sigma_{1}, f(a) = z\} \in A_{2}$. We conclude that $N$ accepts $f(w)$ if and only if $M$ accepts $w$.
+\end{itemize}
+In coclusion, $N$ is the NFA we construct that accepts $f(L)$.
+\end{solution}
+
+\end{document}
